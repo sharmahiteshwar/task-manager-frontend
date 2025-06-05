@@ -116,7 +116,24 @@ function App() {
             <div>
               <h3 className="font-bold">{task.title}</h3>
               <p>{task.description}</p>
-              <p>Status: {task.completed ? 'Completed' : 'Pending'}</p>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => {
+                    axios.put(`http://localhost:8080/api/tasks/${task.id}`, {
+                      ...task,
+                      completed: !task.completed
+                    })
+                      .then(response => {
+                        setTasks(tasks.map(t => t.id === task.id ? response.data : t));
+                      })
+                      .catch(error => console.error('Error updating task:', error));
+                  }}
+                  className="mr-2"
+                />
+                <span>{task.completed ? 'Completed' : 'Pending'}</span>
+              </label>
             </div>
             <div>
               <button
